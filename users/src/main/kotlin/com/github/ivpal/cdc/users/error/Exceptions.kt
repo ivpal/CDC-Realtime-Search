@@ -1,4 +1,4 @@
-package users.error
+package com.github.ivpal.cdc.users.error
 
 open class NotFoundException(override val message: String) : RuntimeException(message)
 class UserNotFoundException(id: Long) : NotFoundException("User with id=$id not found")

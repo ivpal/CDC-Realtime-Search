@@ -1,4 +1,4 @@
-package users.error
+package com.github.ivpal.cdc.users.error
 
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.ControllerAdvice

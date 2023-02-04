@@ -1,6 +1,6 @@
 @file:Suppress("JpaObjectClassSignatureInspection")
 
-package users.persistence
+package com.github.ivpal.cdc.users.persistence
 
 import jakarta.persistence.Column
 import jakarta.persistence.Entity

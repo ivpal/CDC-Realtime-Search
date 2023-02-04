@@ -1,4 +1,4 @@
-package users
+package com.github.ivpal.cdc.users
 
 import org.springframework.boot.SpringApplication
 import org.springframework.boot.autoconfigure.SpringBootApplication
