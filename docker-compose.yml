@@ -7,3 +7,50 @@ services:
     environment:
       - POSTGRES_USER=users
       - POSTGRES_PASSWORD=users
+  redpanda:
+    image: vectorized/redpanda:v22.3.11
+    ports:
+      - "9092:9092"
+      - "29092:29092"
+    command:
+      - redpanda
+      - start
+      - --overprovisioned
+      - --smp
+      - "1"
+      - --memory
+      - "512M"
+      - --reserve-memory
+      - "0M"
+      - --node-id
+      - "0"
+      - --kafka-addr
+      - PLAINTEXT://0.0.0.0:29092,OUTSIDE://0.0.0.0:9092
+      - --advertise-kafka-addr
+      - PLAINTEXT://redpanda:29092,OUTSIDE://localhost:9092
+      - --pandaproxy-addr
+      - 0.0.0.0:8082
+      - --advertise-pandaproxy-addr
+      - localhost:8082
+      - --check=false
+  connect:
+    image: debezium/connect:2.1.2.Final
+    depends_on:
+      - redpanda
+    ports:
+      - "8083:8083"
+    environment:
+      BOOTSTRAP_SERVERS: "redpanda:29092"
+      GROUP_ID: "1"
+      CONFIG_STORAGE_TOPIC: "users.configs"
+      OFFSET_STORAGE_TOPIC: "users.offset"
+      STATUS_STORAGE_TOPIC: "users.status"
+  elastic:
+    image: elasticsearch:8.6.1
+    ports:
+      - "9200:9200"
+    environment:
+      - discovery.type=single-node
+      - http.host=0.0.0.0
+      - transport.host=0.0.0.0
+      - xpack.security.enabled=false
