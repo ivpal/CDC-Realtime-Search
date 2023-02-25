@@ -1,17 +1,23 @@
 server:
-  port: 8081
+  port: 8080
 
 spring:
-  kafka:
-    bootstrap-servers: localhost:9092
+  data:
+    elasticsearch:
+      client:
+        reactive:
+          endpoints: elastic:9200
   cloud:
     function:
       definition: userChangesConsumer
     stream:
+      kafka:
+        binder:
+          brokers: redpanda:9092
       binders:
         users-changes-binder:
           type: kafka
       bindings:
         userChangesConsumer-in-0:
           binder: users-changes-binder
-          destination: dbserver1.public.users
+          destination: users.public.users

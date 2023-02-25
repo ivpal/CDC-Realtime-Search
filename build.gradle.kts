@@ -1,36 +1,69 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
-plugins {
-	id("org.springframework.boot") version "3.0.2"
-	id("io.spring.dependency-management") version "1.1.0"
-	kotlin("jvm") version "1.7.22"
-	kotlin("kapt") version "1.7.22"
-	kotlin("plugin.spring") version "1.7.22"
-	kotlin("plugin.jpa") version "1.7.22"
-}
+subprojects {
+    buildscript {
+        repositories {
+            mavenCentral()
+        }
+    }
 
-group = "com.github.ivpal"
-version = "0.0.1-SNAPSHOT"
-java.sourceCompatibility = JavaVersion.VERSION_17
+    apply(plugin = "org.jetbrains.kotlin.jvm")
+    apply(plugin = "org.jetbrains.kotlin.kapt")
+    apply(plugin = "org.jetbrains.kotlin.plugin.spring")
+    apply(plugin = "org.jetbrains.kotlin.plugin.jpa")
+
+    apply(plugin = "org.springframework.boot")
+    apply(plugin = "io.spring.dependency-management")
+
+    apply(plugin = "com.google.cloud.tools.jib")
+    apply(plugin = "org.jlleitschuh.gradle.ktlint")
+
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        implementation("org.jetbrains.kotlin:kotlin-reflect")
+        implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
+
+        implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
+        implementation("org.mapstruct:mapstruct:${Constants.mapstructVersion}")
+        kapt("org.mapstruct:mapstruct-processor:${Constants.mapstructVersion}")
+
+        testImplementation("org.springframework.boot:spring-boot-starter-test")
+        testImplementation("org.testcontainers:junit-jupiter:${Constants.testcontainersVersion}")
+        testImplementation("org.testcontainers:testcontainers:${Constants.testcontainersVersion}")
+    }
+
+    jib {
+        from {
+            image = "arm64v8/eclipse-temurin:17-jre-ubi9-minimal"
+        }
+    }
+
+    tasks.withType<KotlinCompile> {
+        kotlinOptions {
+            freeCompilerArgs = listOf("-Xjsr305=strict")
+            jvmTarget = "17"
+        }
+    }
+
+    tasks.withType<Test> {
+        useJUnitPlatform()
+    }
+}
 
 repositories {
-	mavenCentral()
+    mavenCentral()
 }
 
-dependencies {
-	implementation("org.springframework.boot:spring-boot-starter")
-	implementation("org.jetbrains.kotlin:kotlin-reflect")
-	implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
-	testImplementation("org.springframework.boot:spring-boot-starter-test")
-}
-
-tasks.withType<KotlinCompile> {
-	kotlinOptions {
-		freeCompilerArgs = listOf("-Xjsr305=strict")
-		jvmTarget = "17"
-	}
-}
-
-tasks.withType<Test> {
-	useJUnitPlatform()
+plugins {
+    kotlin("jvm") version Constants.kotlinVersion
+    kotlin("kapt") version Constants.kotlinVersion
+    kotlin("plugin.spring") version Constants.kotlinVersion
+    kotlin("plugin.jpa") version Constants.kotlinVersion
+    id("org.springframework.boot") version Constants.springVersion
+    id("io.spring.dependency-management") version Constants.dependencyManagementVersion
+    id("com.google.cloud.tools.jib") version Constants.jibVersion
+    id("org.jlleitschuh.gradle.ktlint") version Constants.ktlintVersion
 }

@@ -1,5 +1,18 @@
 version: '3'
 services:
+  users:
+    image: users:0.0.1-SNAPSHOT
+    ports:
+      - "8080:8080"
+    depends_on:
+      - users-db
+  search:
+    image: search:0.0.1-SNAPSHOT
+    ports:
+      - "8081:8080"
+    depends_on:
+      - elastic
+      - redpanda
   users-db:
     image: debezium/postgres:15-alpine
     ports:
@@ -27,16 +40,15 @@ services:
       - --kafka-addr
       - PLAINTEXT://0.0.0.0:29092,OUTSIDE://0.0.0.0:9092
       - --advertise-kafka-addr
-      - PLAINTEXT://redpanda:29092,OUTSIDE://localhost:9092
-      - --pandaproxy-addr
-      - 0.0.0.0:8082
-      - --advertise-pandaproxy-addr
-      - localhost:8082
+      - PLAINTEXT://redpanda:29092,OUTSIDE://redpanda:9092
       - --check=false
+    depends_on:
+      - users-db
   connect:
     image: debezium/connect:2.1.2.Final
     depends_on:
       - redpanda
+      - users-db
     ports:
       - "8083:8083"
     environment:

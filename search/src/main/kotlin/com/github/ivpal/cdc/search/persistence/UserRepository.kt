@@ -5,6 +5,6 @@ import org.springframework.data.elasticsearch.repository.ReactiveElasticsearchRe
 import reactor.core.publisher.Flux
 
 interface UserRepository : ReactiveElasticsearchRepository<User, Long> {
-    @Query("""{"query_string": { "query": "?0" } }""")
+    @Query("""{"query_string": { "query": "*?0*" } }""")
     fun search(query: String): Flux<User>
 }

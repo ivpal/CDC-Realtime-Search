@@ -18,11 +18,13 @@ class UserService(
 
     fun update(value: ValueUser): Mono<User> =
         userRepository.findById(value.id)
-            .map { user -> user.apply {
-                username = user.username
-                firstname = user.firstname
-                lastname = user.lastname
-            } }
+            .map { user ->
+                user.apply {
+                    username = requireNotNull(value.username)
+                    firstname = requireNotNull(value.firstname)
+                    lastname = requireNotNull(value.lastname)
+                }
+            }
             .flatMap { userRepository.save(it) }
 
     fun search(query: String): Flux<User> = userRepository.search(query)

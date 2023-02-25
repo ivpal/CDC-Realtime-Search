@@ -1,10 +1,10 @@
 package com.github.ivpal.cdc.users
 
-import org.mapstruct.Mapper
-import org.mapstruct.Mapping
 import com.github.ivpal.cdc.users.api.UserRequest
 import com.github.ivpal.cdc.users.api.UserResponse
 import com.github.ivpal.cdc.users.persistence.User
+import org.mapstruct.Mapper
+import org.mapstruct.Mapping
 
 @Mapper(componentModel = "spring")
 interface UserMapper {

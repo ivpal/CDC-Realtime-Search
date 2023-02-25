@@ -34,6 +34,7 @@ import org.testcontainers.junit.jupiter.Testcontainers
 @Testcontainers
 class UsersControllerTest {
     @Autowired private lateinit var webApplicationContext: WebApplicationContext
+
     @Autowired private lateinit var mapper: ObjectMapper
 
     private lateinit var mockMvc: MockMvc

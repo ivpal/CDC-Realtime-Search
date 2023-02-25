@@ -1,5 +1,8 @@
 package com.github.ivpal.cdc.users.api
 
+import com.github.ivpal.cdc.users.UserMapper
+import com.github.ivpal.cdc.users.error.UserNotFoundException
+import com.github.ivpal.cdc.users.persistence.UserRepository
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.DeleteMapping
@@ -11,9 +14,6 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
-import com.github.ivpal.cdc.users.UserMapper
-import com.github.ivpal.cdc.users.error.UserNotFoundException
-import com.github.ivpal.cdc.users.persistence.UserRepository
 
 @RestController
 @RequestMapping("/api/users")
