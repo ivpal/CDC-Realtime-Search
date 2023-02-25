@@ -1,4 +1,4 @@
-version: '3'
+version: '3.9'
 services:
   users:
     image: users:0.0.1-SNAPSHOT
@@ -11,8 +11,10 @@ services:
     ports:
       - "8081:8080"
     depends_on:
-      - elastic
-      - redpanda
+      elastic:
+        condition: service_healthy
+      redpanda:
+        condition: service_healthy
   users-db:
     image: debezium/postgres:15-alpine
     ports:
@@ -44,6 +46,7 @@ services:
       - --check=false
     depends_on:
       - users-db
+    healthcheck: { test: curl -f localhost:9644/v1/status/ready, interval: 1s, start_period: 10s }
   connect:
     image: debezium/connect:2.1.2.Final
     depends_on:
@@ -66,3 +69,4 @@ services:
       - http.host=0.0.0.0
       - transport.host=0.0.0.0
       - xpack.security.enabled=false
+    healthcheck: { test: curl -f localhost:9200/_cat/indices, interval: 1s, start_period: 30s }
